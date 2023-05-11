@@ -1,0 +1,32 @@
+body{
+    font-family: initial;
+    margin: 0px;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    grid-template-rows: 100vh;
+    grid-template-areas: 
+    "jeden dwa";
+}
+#menu{
+    grid-area: dwa;
+    background-color: aquamarine;
+}
+#map{
+    grid-area: jeden;
+    height: 100%;
+}
+#punkty{
+    font-size: 50px;
+}
+
+#zycia{
+    font-size: 50px;
+}
+#koniec{
+    font-size: 300px;
+    color: white;
+}
+#pk{
+    font-size: 100px;
+    color: white;
+}
