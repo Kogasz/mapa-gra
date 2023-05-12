@@ -13,6 +13,19 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+function style(feature) {
+  return {
+      fillColor: "blue",
+      weight: 2,
+      opacity: 1,
+      color: 'white',
+      dashArray: '',
+      fillOpacity: 1
+  };
+}
+
+L.geoJson(wojewodztwa, {style: style}).addTo(map);
+
 map.dragging.disable(); 
 map.scrollWheelZoom.disable();
 
@@ -38,24 +51,6 @@ var wylosowane = losujWojewodztwo();
 
 document.getElementById("wojewodz").innerHTML = "Kliknij Województwo: " + wylosowane
 
-function rysujTraseDoPoprawnegoWojewodztwa(kliknieteWojewodztwo) {
-    // Pobranie koordynat klikniętego województwa
-    var kliknieteWojewodztwoLayer = wojewodztwaLayer.getLayers().find(layer => layer.feature.properties.nazwa === kliknieteWojewodztwo);
-    var kliknieteWojewodztwoCoords = kliknieteWojewodztwoLayer.getBounds().getCenter();
-  
-    // Pobranie koordynat poprawnego województwa
-    var poprawneWojewodztwoLayer = wojewodztwaLayer.getLayers().find(layer => layer.feature.properties.nazwa === poprawneWojewodztwo);
-    var poprawneWojewodztwoCoords = poprawneWojewodztwoLayer.getBounds().getCenter();
-  
-    // Utworzenie obiektu z punktami końcowymi trasy
-    var points = [
-      L.latLng(kliknieteWojewodztwoCoords.lat, kliknieteWojewodztwoCoords.lng),
-      L.latLng(poprawneWojewodztwoCoords.lat, poprawneWojewodztwoCoords.lng)
-    ];
-}
-
-
-
 
 wojewodztwaLayer.on('click', function(e) {
     var kliknieteWojewodztwo = e.layer.feature.properties.nazwa;
@@ -64,7 +59,7 @@ wojewodztwaLayer.on('click', function(e) {
         punkty++
         div_punkty.innerHTML= `Punkty: ${punkty}`
         alert(`Gratulacje, Zdobywasz Punkt, Masz ${punkty} punkt`);
-
+        wylosowane = losujWojewodztwo();
         console.log(wylosowane)
     } else {
         var poprawneWojewodztwo = wylosowane;
@@ -75,10 +70,13 @@ wojewodztwaLayer.on('click', function(e) {
           poprawnyLayer.getBounds().getCenter(),
           kliknietyLayer.getBounds().getCenter()
         ];
-        var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
-    
-    
+        var startMarker = L.marker(latlngs[0]).addTo(map);
+        var endMarker = L.marker(latlngs[latlngs.length - 1]).addTo(map);
+        var odle = startMarker.getLatLng().distanceTo(endMarker.getLatLng());
+         var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+        polyline.bindTooltip((odle / 1000).toFixed(2) + " km",{permanent:true});
 
+        
         zycia-=1
         div_zycia.innerHTML= `Zycia: ${zycia}`
         alert(`Niestety, spróbuj jeszcze raz. Zostały ci ${zycia} zycia`);
