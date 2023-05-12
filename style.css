@@ -10,6 +10,11 @@ body{
 #menu{
     grid-area: dwa;
     background-color: aquamarine;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 300px;
 }
 #map{
     grid-area: jeden;
